@@ -2,34 +2,41 @@ import csv
 
 
 def display_contacts(people_):
-    for key_ in people_.keys():
-        display_one_person(people_, key_)
+    if len(people_) > 0
+        for key_ in people_.keys():
+            display_one_person(people_, key_)
+    else:
+        print("No display data found.")
 
 
-
-def search_by_phone(people):
-    print("Please enter town to filter:", end="")
-    key_to_find = input()
-    # todo
+def search_by_phone(people_):
+    print("Please enter phone number to filter:", end="")
+    key_to_find = remove_not_needed_symbols(input())
     flag = 0
-    if key_to_find in people.keys():
-        display_one_person(people, key_to_find)
-        flag =1
+    if not key_to_find.isdigit():
+        print("Not Found")
+        return
+    phone = int(key_to_find)
+    if phone in people_.keys():
+        display_one_person(people_, phone)
+        flag = 1
+
     if not flag:
         print("Not Found")
 
 
-def search_by_name(people):
-    print("Please enter town to filter:", end="")
+def search_by_name(people_):
+    print("Please enter name to filter:", end="")
     value_to_find = input()
     flag = 0
-    for key, values_d in people:
-        if people[key]["Name"] == value_to_find:
+    for key, values_d in people_.items():
+        if people_[key]["Name"] == value_to_find:
             flag = 1
-            display_one_person(people, key)
+            display_one_person(people_, key)
         break
     if not flag:
         print("Not Found")
+
 
 def display_one_person(people_, key_):
     val1 = "Name"
@@ -37,16 +44,18 @@ def display_one_person(people_, key_):
     val3 = "Phone"
     print(f"Name: {people_[key_][val1]}")
     print(f"Town: {people_[key_][val2]}")
-    print(f"Town: {people_[key_][val3]}")
+    print(f"Phone: {people_[key_][val3]}")
+    print()
 
-def search_by_town(people):
+
+def search_by_town(people_):
     print("Please enter town to filter:", end="")
     town_to_find = input()
     flag = 0
-    for key, values_d in people:
-        if people[key]["Town"] == town_to_find:
+    for key, values_d in people_.items():
+        if people_[key]["Town"] == town_to_find:
             flag = 1
-            display_one_person(people, key)
+            display_one_person(people_, key)
         break
     if not flag:
         print("Not Found")
@@ -56,42 +65,80 @@ def add_contact(people_, phone_, name_, town_, phone_row_):
     people_[phone_] = {"Name": name_, "Town": town_, "Phone": phone_row_}
 
 
-
-def insert_new_contact(people):
+def insert_new_contact(people_):
     print("Please enter 'Name':", end="")
     name = input()
-    if not name.isalpha():
-        print("The 'Name' is not valid. No contact inserted.")
-        return 0
+    name_list = name.split(" ")
+    for names in name_list:
+        if not names.isalpha():
+            print("The 'Name' is not valid. No contact inserted.")
+            return 0
     print("Please enter 'Town':", end="")
     town = input()
-    if not town.isalpha():
-        print("The 'Town' is not valid, No contact inserted.")
-        return 0
+    town_list = town.split(" ")
+    for town_name in town_list:
+        if not town_name.isalpha():
+            print("The 'Town' is not valid, No contact inserted.")
+            return 0
     print("Please enter 'phone number':", end="")
+
     phone_row = input()
-    phone = ""
-    for symbol1 in phone_row:
-        if symbol1 == "/" or symbol1 == "+" or symbol1 == " ":
-            continue
-        phone += symbol1
+    phone = remove_not_needed_symbols(phone_row)
     if not phone.isdigit():
         print("The 'Phone' is not valid, No contact inserted.")
         return 0
-    add_contact(people, int(phone), name, town, phone_row)
+    add_contact(people_, int(phone), name, town, phone_row)
+    print("You have successfully added a contact.")
     return 1
 
 
-def delete_contact(people):
-    return "delete_contact"
+def remove_not_needed_symbols(phone_row_):
+    phone = ""
+    for symbol1 in phone_row_:
+        if symbol1 == "/" or symbol1 == "+" or symbol1 == " ":
+            continue
+        phone += symbol1
+    return phone
 
 
-def update_contact(people):
-    return "update_contact"
+def delete_contact(people_):
+    print("Please enter a phone to delete contact: ")
+    key = remove_not_needed_symbols(input())
+    name = people_[key]["Name"]
+    town = people_[key]["Town"]
+    phone = people_[key]["Phone"]
+    del people_[key]
+    print("You have successfully removed:")
+    print(f"Name: {name}")
+    print(f"Town: {town}")
+    print(f"Phone: {phone}")
+
+
+def update_contact(people_):
+    print("Please enter a phone to update contact: ")
+    key = remove_not_needed_symbols(input())
+    display_one_person(key)
+    print("Please enter new 'Name':", end="")
+    name = input()
+    name_list = name.split(" ")
+    for names in name_list:
+        if not names.isalpha():
+            print("The 'Name' is not valid. No contact updated.")
+            return 0
+    print("Please enter new 'Town':", end="")
+    town = input()
+    town_list = town.split(" ")
+    for town_name in town_list:
+        if not town_name.isalpha():
+            print("The 'Town' is not valid, No contact updated.")
+            return 0
+    add_contact(people_, int(key), name, town, people_[int(key)]["Phone"])
+    print("You have successfully edited a contact.")
 
 
 def display_go_menu():
     print("press a key to go to Menu")
+    input()
 
 
 def display_menu():
@@ -106,23 +153,24 @@ def display_menu():
     print("8.End")
 
 
-def process_choice(choice, dict):
-
-    switcher = {
-        1: search_by_name,
-        2: search_by_town,
-        3: search_by_phone,
-        4: display_contacts,
-        5: insert_new_contact,
-        6: delete_contact,
-        7: update_contact
-    }
-
-    func = switcher.get(int(choice), "nothing")
-    if func != "nothing":
-        func(dict)
-    print(f"Your choice is {choice}")
-    display_go_menu()
+def process_choice(choice, dict_):
+    try:
+        switcher = {
+            1: search_by_name,
+            2: search_by_town,
+            3: search_by_phone,
+            4: display_contacts,
+            5: insert_new_contact,
+            6: delete_contact,
+            7: update_contact
+        }
+        if choice.isdigit():
+            func = switcher.get(int(choice), "nothing")
+            if func != "nothing":
+                func(dict_)
+        display_go_menu()
+    except:
+        display_go_menu()
 
 
 #    Format
@@ -139,19 +187,20 @@ def load_data_from_file(people):
         for row in reader:
             people[row[0]] = {"Name": row[1], "Town": row[2], "Phone": row[3]}
     except FileNotFoundError:
-        return 0;
+        return 0
 
 
 # Save dictionary
 def save_data_to_file(people):
-    csv_columns = ['ID', 'Name', "Town", "Phone"]
+    if len(people) < 1:
+        return 0
     try:
         with open("contacts.csv", 'w') as f:
-            writer = csv.DictWriter(f, fieldnames=csv_columns)
-            writer.writeheader()
-            for data in people:
+            writer = csv.writer(f)
+            for key in people.keys():
+                data = [key, people[key]["Name"], people[key]["Town"], people[key]["Phone"]]
                 writer.writerow(data)
-        print("Your data is saved")
+        print("Your data has been saved successfully.")
     except IOError:
         print("I/O error")
 
@@ -160,12 +209,15 @@ if __name__ == "__main__":
     data_dict = {}
     load_data_from_file(data_dict)
     your_choice = 0
-    while your_choice != 8:
+    display_menu()
+    your_choice = input()
+    while your_choice != '8':
+        process_choice(your_choice, data_dict)
         display_menu()
         your_choice = input()
-        if your_choice not in ('1', '2', '3', '4', '5', '6', '7', '8'):
+        while your_choice not in ('1', '2', '3', '4', '5', '6', '7', '8'):
             print("Please, enter a value between 1 and 8")
-            continue
-        process_choice(your_choice, data_dict)
-        your_choice = input()
+            display_menu()
+            your_choice = input()
+
     save_data_to_file(data_dict)
