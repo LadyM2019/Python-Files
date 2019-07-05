@@ -2,7 +2,7 @@ import csv
 
 
 def display_contacts(people_):
-    if len(people_) > 0
+    if len(people_) > 0:
         for key_ in people_.keys():
             display_one_person(people_, key_)
     else:
@@ -102,38 +102,57 @@ def remove_not_needed_symbols(phone_row_):
 
 
 def delete_contact(people_):
-    print("Please enter a phone to delete contact: ")
-    key = remove_not_needed_symbols(input())
-    name = people_[key]["Name"]
-    town = people_[key]["Town"]
-    phone = people_[key]["Phone"]
-    del people_[key]
-    print("You have successfully removed:")
-    print(f"Name: {name}")
-    print(f"Town: {town}")
-    print(f"Phone: {phone}")
+    print("Please enter a phone to delete contact: ", end="")
+    phone = remove_not_needed_symbols(input())
+    flag = 0
+    if not phone.isdigit():
+        flag = 0
+    else:
+        key = int(phone)
+        if key in people_.keys():
+            name = people_[key]["Name"]
+            town = people_[key]["Town"]
+            phone = people_[key]["Phone"]
+            del people_[key]
+            print("You have successfully removed:")
+            print(f"Name: {name}")
+            print(f"Town: {town}")
+            print(f"Phone: {phone}")
+            flag = 1
+    if flag == 0:
+        print("No contact removed.")
 
 
 def update_contact(people_):
-    print("Please enter a phone to update contact: ")
-    key = remove_not_needed_symbols(input())
-    display_one_person(key)
-    print("Please enter new 'Name':", end="")
-    name = input()
-    name_list = name.split(" ")
-    for names in name_list:
-        if not names.isalpha():
-            print("The 'Name' is not valid. No contact updated.")
-            return 0
-    print("Please enter new 'Town':", end="")
-    town = input()
-    town_list = town.split(" ")
-    for town_name in town_list:
-        if not town_name.isalpha():
-            print("The 'Town' is not valid, No contact updated.")
-            return 0
-    add_contact(people_, int(key), name, town, people_[int(key)]["Phone"])
-    print("You have successfully edited a contact.")
+    print("Please enter a phone to update contact: ", end="")
+    phone = remove_not_needed_symbols(input())
+    flag = 0
+    if not phone.isdigit():
+        flag = 0
+    else:
+        key = int(phone)
+        if key in people_.keys():
+            display_one_person(people_, key)
+            print()
+            print("Please enter new 'Name':", end="")
+            name = input()
+            name_list = name.split(" ")
+            for names in name_list:
+                if not names.isalpha():
+                    print("The 'Name' is not valid. No contact updated.")
+                    return 0
+            print("Please enter new 'Town':", end="")
+            town = input()
+            town_list = town.split(" ")
+            for town_name in town_list:
+                if not town_name.isalpha():
+                    print("The 'Town' is not valid, No contact updated.")
+                    return 0
+            add_contact(people_, int(key), name, town, people_[int(key)]["Phone"])
+            print("You have successfully edited a contact.")
+            flag = 1
+    if flag == 0:
+        print("No contact updated.")
 
 
 def display_go_menu():
@@ -185,7 +204,9 @@ def load_data_from_file(people):
         reader = csv.reader(f)
 
         for row in reader:
-            people[row[0]] = {"Name": row[1], "Town": row[2], "Phone": row[3]}
+            if len(row) > 3:
+                people[int(row[0])] = {"Name": row[1], "Town": row[2], "Phone": row[3]}
+        f.close()
     except FileNotFoundError:
         return 0
 
@@ -201,6 +222,7 @@ def save_data_to_file(people):
                 data = [key, people[key]["Name"], people[key]["Town"], people[key]["Phone"]]
                 writer.writerow(data)
         print("Your data has been saved successfully.")
+        f.close()
     except IOError:
         print("I/O error")
 
