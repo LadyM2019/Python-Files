@@ -33,7 +33,7 @@ def search_by_name(people_):
         if people_[key]["Name"] == value_to_find:
             flag = 1
             display_one_person(people_, key)
-        break
+
     if not flag:
         print("Not Found")
 
@@ -56,7 +56,7 @@ def search_by_town(people_):
         if people_[key]["Town"] == town_to_find:
             flag = 1
             display_one_person(people_, key)
-        break
+
     if not flag:
         print("Not Found")
 
@@ -219,8 +219,8 @@ def save_data_to_file(people):
         with open("contacts.csv", 'w') as f:
             writer = csv.writer(f)
             for key in people.keys():
-                data = [key, people[key]["Name"], people[key]["Town"], people[key]["Phone"]]
-                writer.writerow(data)
+                writer.writerow([key, people[key]["Name"], people[key]["Town"], people[key]["Phone"]])
+
         print("Your data has been saved successfully.")
         f.close()
     except IOError:
