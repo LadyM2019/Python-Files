@@ -1,0 +1,35 @@
+"""
+Simple To Do List with PyQt5
+"""
+import sys
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.uic import loadUi
+
+
+class ToDoList(QDialog):
+    def __init__(self):
+        super(ToDoList, self).__init__()
+        loadUi('SimpleToDoList.ui', self)
+        self.setWindowTitle('Simple To Do List App')
+        self.pushButton_Add.clicked.connect(self.on_push_button_clicked)
+        self.pushButton_Quit.clicked.connect(self.on_quit_button_clicked)
+        self.textEditToDoList.setReadOnly(True)
+        self.pushButton_Add.setStyleSheet('QPushButton {background-color: #4885b5}')
+        self.pushButton_Quit.setStyleSheet('QPushButton {background-color: #c46c71}')
+
+    @pyqtSlot()
+    def on_push_button_clicked(self):
+        string1 = self.lineEditToDo.text()
+        self.textEditToDoList.append(string1)
+
+    @pyqtSlot()
+    def on_quit_button_clicked(self):
+        #todo save the ToDo list
+        sys.exit(0)
+
+
+app = QApplication(sys.argv)
+widget = ToDoList()
+widget.show()
+sys.exit(app.exec_())
