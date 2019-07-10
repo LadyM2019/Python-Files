@@ -2,7 +2,7 @@
 Simple To Do List with PyQt5
 """
 import sys
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5.uic import loadUi
 
@@ -12,6 +12,9 @@ class ToDoList(QDialog):
         super(ToDoList, self).__init__()
         loadUi('SimpleToDoList.ui', self)
         self.setWindowTitle('Simple To Do List App')
+        self.setWindowFlag(Qt.WindowCloseButtonHint, False)
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
+        self.setWindowFlag(Qt.WindowSystemMenuHint, False)
         self.pushButton_Add.clicked.connect(self.on_push_button_clicked)
         self.pushButton_Quit.clicked.connect(self.on_quit_button_clicked)
         self.textEditToDoList.setReadOnly(True)
@@ -21,11 +24,18 @@ class ToDoList(QDialog):
     @pyqtSlot()
     def on_push_button_clicked(self):
         string1 = self.lineEditToDo.text()
+        self.lineEditToDo.setText('')
         self.textEditToDoList.append(string1)
 
     @pyqtSlot()
     def on_quit_button_clicked(self):
-        #todo save the ToDo list
+        # Save the ToDoList
+        # read lines of text edit box and save to file
+        text_row = self.textEditToDoList.toPlainText()
+        text_list = str(text_row)                           
+        file_todo_list = open("ToDoList.txt", 'w')
+        file_todo_list.writelines(text_list)
+        file_todo_list.close()
         sys.exit(0)
 
 
@@ -33,3 +43,4 @@ app = QApplication(sys.argv)
 widget = ToDoList()
 widget.show()
 sys.exit(app.exec_())
+
