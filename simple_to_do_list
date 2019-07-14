@@ -1,9 +1,10 @@
 """
-Simple To Do List with PyQt5
+Simple To Do List with PyQt5 and PyQt5 Designer
+To run use SimpleToDoList.ui in same directory
 """
 import sys
 from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
 from PyQt5.uic import loadUi
 
 
@@ -21,26 +22,32 @@ class ToDoList(QDialog):
         self.pushButton_Add.setStyleSheet('QPushButton {background-color: #4885b5}')
         self.pushButton_Quit.setStyleSheet('QPushButton {background-color: #c46c71}')
 
+
     @pyqtSlot()
     def on_push_button_clicked(self):
         string1 = self.lineEditToDo.text()
+        if string1 == '':
+            self.error_message()
         self.lineEditToDo.setText('')
         self.textEditToDoList.append(string1)
 
     @pyqtSlot()
     def on_quit_button_clicked(self):
         # Save the ToDoList
-        # read lines of text edit box and save to file
+        # read lines of text edit box and add to lists
         text_row = self.textEditToDoList.toPlainText()
-        text_list = str(text_row)                           
-        file_todo_list = open("ToDoList.txt", 'w')
+        text_list = str(text_row)
+        file_todo_list = open('ToDoList.txt', 'w')
         file_todo_list.writelines(text_list)
         file_todo_list.close()
         sys.exit(0)
+
+    @pyqtSlot()
+    def error_message(self):
+        QMessageBox.information(self, "Error Message", "Error: Blank ToDo Item!")
 
 
 app = QApplication(sys.argv)
 widget = ToDoList()
 widget.show()
 sys.exit(app.exec_())
-
