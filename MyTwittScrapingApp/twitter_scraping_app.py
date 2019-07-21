@@ -37,51 +37,7 @@ def get_100_tweets(twitter_handle):
             w.writerow([tweet.created_at, tweet.full_text.replace('\n', ' ').encode('utf-8'),
                         tweet.user.screen_name.encode('utf-8'),
                         tweet.user.followers_count, tweet.user.profile_image_url])
-    """
-        # initialization of a list to hold all Tweets
-        all_the_tweets = []
     
-        # We will get the tweets with multiple requests of 200 tweets each
-    
-        new_tweets = api.user_timeline(screen_name=screen_name, count=200)
-    
-        # saving the most recent tweets
-    
-        all_the_tweets.extend(new_tweets)
-    
-        # save id of 1 less than the oldest tweet
-    
-        oldest_tweet = all_the_tweets[-1].id - 1
-    
-        # grabbing tweets till none are left
-    
-        while len(new_tweets) &amp;amp;amp;amp;gt; 0:
-            # The max_id param will be used subsequently to prevent duplicates
-            new_tweets = api.user_timeline(screen_name=screen_name,
-            count=200, max_id=oldest_tweet)
-    
-            # save most recent tweets
-    
-            all_the_tweets.extend(new_tweets)
-    
-        # id is updated to oldest tweet - 1 to keep track
-    
-        oldest_tweet = all_the_tweets[-1].id - 1
-        print ('...%s tweets have been downloaded so far' % len(all_the_tweets))
-    
-        # transforming the tweets into a 2D array that will be used to populate the csv
-    
-        outtweets = [[tweet.id_str, tweet.created_at,
-        tweet.text.encode('utf-8')] for tweet in all_the_tweets]
-    
-        # writing to the csv file
-    
-        with open(screen_name + '_tweets.csv', 'w', encoding='utf8') as f:
-        writer = csv.writer(f)
-        writer.writerow(['id', 'created_at', 'text'])
-        writer.writerows(outtweets)
-    """
-
 
 if __name__ == '__main__':
 
