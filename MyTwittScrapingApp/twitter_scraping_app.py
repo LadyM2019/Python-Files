@@ -1,4 +1,7 @@
-
+"""
+App that scraping information for timestamp, tweet text, user name, follower count and profile image url.
+The input value is the twitter handle of the person whose tweets you want to download.
+"""
 
 import tweepy
 import csv
