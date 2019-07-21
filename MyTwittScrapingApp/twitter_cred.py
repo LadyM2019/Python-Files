@@ -6,7 +6,6 @@ import json
 twitter_cred = dict()
 
 # Enter your own consumer_key, consumer_secret, access_key and access_secret
-# Replacing the stars ("********")
 
 twitter_cred['CONSUMER_KEY'] = 'CONSUMER_KEY'
 twitter_cred['CONSUMER_SECRET'] = 'CONSUMER_SECRET'
